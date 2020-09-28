@@ -36,6 +36,20 @@ const (
 
 // BBands - Bollinger Bands
 // upperband, middleband, lowerband = BBands(close, timeperiod=5, nbdevup=2, nbdevdn=2, matype=0)
+//
+// inNbDevUp: Deviation multiplier for upper band
+// inNbDevDn: Deviation multiplier for lower band
+// inMAType: Type of Moving Average
+//
+// ENUM_DEFINE( TA_MAType_SMA,   Sma   ) =0,
+// ENUM_DEFINE( TA_MAType_EMA,   Ema   ) =1,
+// ENUM_DEFINE( TA_MAType_WMA,   Wma   ) =2,
+// ENUM_DEFINE( TA_MAType_DEMA,  Dema  ) =3,
+// ENUM_DEFINE( TA_MAType_TEMA,  Tema  ) =4,
+// ENUM_DEFINE( TA_MAType_TRIMA, Trima ) =5,
+// ENUM_DEFINE( TA_MAType_KAMA,  Kama  ) =6,
+// ENUM_DEFINE( TA_MAType_MAMA,  Mama  ) =7,
+// ENUM_DEFINE( TA_MAType_T3,    T3    ) =8
 func BBands(inReal []float64, inTimePeriod int, inNbDevUp float64, inNbDevDn float64, inMAType MaType) ([]float64, []float64, []float64) {
 
 	outRealUpperBand := make([]float64, len(inReal))
