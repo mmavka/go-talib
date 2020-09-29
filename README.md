@@ -6,10 +6,11 @@ A pure [Go](http://golang.org/) port of [TA-Lib](http://ta-lib.org)
 
 ## Install
 
-Install the package with:
+Require the package in your go.mod:
 
-```bash
-go get github.com/markcheno/go-talib
+```go.mod
+require github.com/markcheno/go-talib latest
+replace github.com/markcheno/go-talib => github.com/ydm/go-talib v1.0.0
 ```
 
 Import it with:
