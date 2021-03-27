@@ -1,4 +1,4 @@
-module github.com/markcheno/go-talib
+module github.com/bozzo/go-talib
 
 go 1.15
 
