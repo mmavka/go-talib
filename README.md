@@ -1,6 +1,6 @@
 # go-talib
 
-[![GoDoc](http://godoc.org/github.com/markcheno/go-talib?status.svg)](http://godoc.org/github.com/markcheno/go-talib) 
+[![GoDoc](http://godoc.org/github.com/bozzo/go-talib?status.svg)](http://godoc.org/github.com/bozzo/go-talib) 
 
 A pure [Go](http://golang.org/) port of [TA-Lib](http://ta-lib.org)
 
@@ -9,14 +9,13 @@ A pure [Go](http://golang.org/) port of [TA-Lib](http://ta-lib.org)
 Require the package in your go.mod:
 
 ```go.mod
-require github.com/markcheno/go-talib latest
-replace github.com/markcheno/go-talib => github.com/ydm/go-talib v1.0.0
+require github.com/bozzo/go-talib latest
 ```
 
 Import it with:
 
 ```go
-import "github.com/markcheno/go-talib"
+import "github.com/bozzo/go-talib"
 ```
 
 and use `talib` as the package name inside the code.
@@ -29,7 +28,7 @@ package main
 import (
 	"fmt"
 	"github.com/markcheno/go-quote"
-	"github.com/markcheno/go-talib"
+	"github.com/bozzo/go-talib"
 )
 
 func main() {
