@@ -100,6 +100,83 @@ func BBands(inReal []float64, inTimePeriod int, inNbDevUp float64, inNbDevDn flo
 	return outRealUpperBand, outRealMiddleBand, outRealLowerBand
 }
 
+// BBandsUp - Bollinger Bands
+// upperband, middleband = BBands(close, timeperiod=5, nbdevup=2, matype=0)
+//
+// inNbDevUp: Deviation multiplier for upper band
+// inMAType: Type of Moving Average
+//
+// ENUM_DEFINE( TA_MAType_SMA,   Sma   ) =0,
+// ENUM_DEFINE( TA_MAType_EMA,   Ema   ) =1,
+// ENUM_DEFINE( TA_MAType_WMA,   Wma   ) =2,
+// ENUM_DEFINE( TA_MAType_DEMA,  Dema  ) =3,
+// ENUM_DEFINE( TA_MAType_TEMA,  Tema  ) =4,
+// ENUM_DEFINE( TA_MAType_TRIMA, Trima ) =5,
+// ENUM_DEFINE( TA_MAType_KAMA,  Kama  ) =6,
+// ENUM_DEFINE( TA_MAType_MAMA,  Mama  ) =7,
+// ENUM_DEFINE( TA_MAType_T3,    T3    ) =8
+func BBandsUp(inReal []float64, inTimePeriod int, inNbDevUp float64, inMAType MaType) ([]float64, []float64) {
+
+	outRealUpperBand := make([]float64, len(inReal))
+	outRealMiddleBand := Ma(inReal, inTimePeriod, inMAType)
+
+	tempBuffer2 := StdDev(inReal, inTimePeriod, 1.0)
+
+	if inNbDevUp == 1.0 {
+		for i := 0; i < len(inReal); i++ {
+			tempReal := tempBuffer2[i]
+			tempReal2 := outRealMiddleBand[i]
+			outRealUpperBand[i] = tempReal2 + tempReal
+		}
+	} else {
+		for i := 0; i < len(inReal); i++ {
+			tempReal := tempBuffer2[i] * inNbDevUp
+			tempReal2 := outRealMiddleBand[i]
+			outRealUpperBand[i] = tempReal2 + tempReal
+		}
+	}
+	return outRealUpperBand, outRealMiddleBand
+}
+
+// BBandsDn - Bollinger Bands
+// upperband, middleband, lowerband = BBands(close, timeperiod=5, nbdevup=2, nbdevdn=2, matype=0)
+//
+// inNbDevUp: Deviation multiplier for upper band
+// inNbDevDn: Deviation multiplier for lower band
+// inMAType: Type of Moving Average
+//
+// ENUM_DEFINE( TA_MAType_SMA,   Sma   ) =0,
+// ENUM_DEFINE( TA_MAType_EMA,   Ema   ) =1,
+// ENUM_DEFINE( TA_MAType_WMA,   Wma   ) =2,
+// ENUM_DEFINE( TA_MAType_DEMA,  Dema  ) =3,
+// ENUM_DEFINE( TA_MAType_TEMA,  Tema  ) =4,
+// ENUM_DEFINE( TA_MAType_TRIMA, Trima ) =5,
+// ENUM_DEFINE( TA_MAType_KAMA,  Kama  ) =6,
+// ENUM_DEFINE( TA_MAType_MAMA,  Mama  ) =7,
+// ENUM_DEFINE( TA_MAType_T3,    T3    ) =8
+func BBandsDn(inReal []float64, inTimePeriod int, inNbDevDn float64, inMAType MaType) ([]float64, []float64) {
+
+	outRealMiddleBand := Ma(inReal, inTimePeriod, inMAType)
+	outRealLowerBand := make([]float64, len(inReal))
+
+	tempBuffer2 := StdDev(inReal, inTimePeriod, 1.0)
+
+	if inNbDevDn == 1.0 {
+		for i := 0; i < len(inReal); i++ {
+			tempReal := tempBuffer2[i]
+			tempReal2 := outRealMiddleBand[i]
+			outRealLowerBand[i] = tempReal2 - tempReal
+		}
+	} else {
+		for i := 0; i < len(inReal); i++ {
+			tempReal := tempBuffer2[i]
+			tempReal2 := outRealMiddleBand[i]
+			outRealLowerBand[i] = tempReal2 - (tempReal * inNbDevDn)
+		}
+	}
+	return outRealMiddleBand, outRealLowerBand
+}
+
 // Dema - Double Exponential Moving Average
 func Dema(inReal []float64, inTimePeriod int) []float64 {
 
@@ -3093,7 +3170,7 @@ func StochRsi(inReal []float64, inTimePeriod int, inFastKPeriod int, inFastDPeri
 	return outFastK, outFastD
 }
 
-//Trix - 1-day Rate-Of-Change (ROC) of a Triple Smooth EMA
+// Trix - 1-day Rate-Of-Change (ROC) of a Triple Smooth EMA
 func Trix(inReal []float64, inTimePeriod int) []float64 {
 
 	tmpReal := Ema(inReal, inTimePeriod)
@@ -5892,9 +5969,9 @@ func Sum(inReal []float64, inTimePeriod int) []float64 {
 //
 // Returns highs, opens, closes and lows of the heikinashi candles (in this order).
 //
-//    NOTE: The number of Heikin-Ashi candles will always be one less than the number of provided candles, due to the fact
-//          that a previous candle is necessary to calculate the Heikin-Ashi candle, therefore the first provided candle is not considered
-//          as "current candle" in the algorithm, but only as "previous candle".
+//	NOTE: The number of Heikin-Ashi candles will always be one less than the number of provided candles, due to the fact
+//	      that a previous candle is necessary to calculate the Heikin-Ashi candle, therefore the first provided candle is not considered
+//	      as "current candle" in the algorithm, but only as "previous candle".
 func HeikinashiCandles(highs []float64, opens []float64, closes []float64, lows []float64) ([]float64, []float64, []float64, []float64) {
 	N := len(highs)
 
@@ -5917,8 +5994,8 @@ func HeikinashiCandles(highs []float64, opens []float64, closes []float64, lows 
 
 // Hlc3 returns the Hlc3 values
 //
-//     NOTE: Every Hlc item is defined as follows : (high + low + close) / 3
-//           It is used as AvgPrice candle.
+//	NOTE: Every Hlc item is defined as follows : (high + low + close) / 3
+//	      It is used as AvgPrice candle.
 func Hlc3(highs []float64, lows []float64, closes []float64) []float64 {
 	N := len(highs)
 	result := make([]float64, N)
@@ -5931,10 +6008,10 @@ func Hlc3(highs []float64, lows []float64, closes []float64) []float64 {
 
 // Crossover returns true if series1 is crossing over series2.
 //
-//    NOTE: Usually this is used with Media Average Series to check if it crosses for buy signals.
-//          It assumes first values are the most recent.
-//          The crossover function does not use most recent value, since usually it's not a complete candle.
-//          The second recent values and the previous are used, instead.
+//	NOTE: Usually this is used with Media Average Series to check if it crosses for buy signals.
+//	      It assumes first values are the most recent.
+//	      The crossover function does not use most recent value, since usually it's not a complete candle.
+//	      The second recent values and the previous are used, instead.
 func Crossover(series1 []float64, series2 []float64) bool {
 	if len(series1) < 3 || len(series2) < 3 {
 		return false
@@ -5947,7 +6024,7 @@ func Crossover(series1 []float64, series2 []float64) bool {
 
 // Crossunder returns true if series1 is crossing under series2.
 //
-//    NOTE: Usually this is used with Media Average Series to check if it crosses for sell signals.
+//	NOTE: Usually this is used with Media Average Series to check if it crosses for sell signals.
 func Crossunder(series1 []float64, series2 []float64) bool {
 	if len(series1) < 3 || len(series2) < 3 {
 		return false
@@ -5965,11 +6042,12 @@ func Crossunder(series1 []float64, series2 []float64) bool {
 // This avoid calling multiple times the exchange for multiple contexts.
 //
 // Example:
-//     To transform 15 minute candles in 30 minutes candles you have a grouping factor = 2
 //
-//     To transform 15 minute candles in 1 hour candles you have a grouping factor = 4
+//	To transform 15 minute candles in 30 minutes candles you have a grouping factor = 2
 //
-//     To transform 30 minute candles in 1 hour candles you have a grouping factor = 2
+//	To transform 15 minute candles in 1 hour candles you have a grouping factor = 4
+//
+//	To transform 30 minute candles in 1 hour candles you have a grouping factor = 2
 func GroupCandles(highs []float64, opens []float64, closes []float64, lows []float64, groupingFactor int) ([]float64, []float64, []float64, []float64, error) {
 	N := len(highs)
 	if groupingFactor == 0 {
