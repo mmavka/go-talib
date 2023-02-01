@@ -1,4 +1,4 @@
-module github.com/bozzo/go-talib
+module github.com/mmavka/go-talib
 
 go 1.16
 
