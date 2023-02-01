@@ -9,13 +9,13 @@ A pure [Go](http://golang.org/) port of [TA-Lib](http://ta-lib.org)
 Require the package in your go.mod:
 
 ```go.mod
-require github.com/bozzo/go-talib latest
+require github.com/mmavka/go-talib latest
 ```
 
 Import it with:
 
 ```go
-import "github.com/bozzo/go-talib"
+import "github.com/mmavka/go-talib"
 ```
 
 and use `talib` as the package name inside the code.
@@ -28,7 +28,7 @@ package main
 import (
 	"fmt"
 	"github.com/markcheno/go-quote"
-	"github.com/bozzo/go-talib"
+	"github.com/mmavka/go-talib"
 )
 
 func main() {
