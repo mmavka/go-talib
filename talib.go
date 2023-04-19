@@ -6030,6 +6030,22 @@ func Crossover(series1 []float64, series2 []float64) bool {
 	return series1[N-2] <= series2[N-2] && series1[N-1] > series2[N-1]
 }
 
+// CrossoverLast returns true if series1 is crossing over series2.
+//
+//	NOTE: Usually this is used with Media Average Series to check if it crosses for buy signals.
+//	      It assumes first values are the most recent.
+//	      The crossover function does not use most recent value, since usually it's not a complete candle.
+//	      The second recent values and the previous are used, instead.
+func CrossoverLast(series1 []float64, series2 []float64) bool {
+	if len(series1) < 2 || len(series2) < 2 {
+		return false
+	}
+
+	N := len(series1)
+
+	return series1[N-1] <= series2[N-1] && series1[N] > series2[N]
+}
+
 // Crossunder returns true if series1 is crossing under series2.
 //
 //	NOTE: Usually this is used with Media Average Series to check if it crosses for sell signals.
@@ -6041,6 +6057,19 @@ func Crossunder(series1 []float64, series2 []float64) bool {
 	N := len(series1)
 
 	return series1[N-1] <= series2[N-1] && series1[N-2] > series2[N-2]
+}
+
+// CrossunderLast returns true if series1 is crossing under series2.
+//
+//	NOTE: Usually this is used with Media Average Series to check if it crosses for sell signals.
+func CrossunderLast(series1 []float64, series2 []float64) bool {
+	if len(series1) < 2 || len(series2) < 2 {
+		return false
+	}
+
+	N := len(series1)
+
+	return series1[N] <= series2[N] && series1[N-1] > series2[N-1]
 }
 
 // GroupCandles groups a set of candles in another set of candles, basing on a grouping factor.
