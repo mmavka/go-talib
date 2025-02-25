@@ -5684,6 +5684,32 @@ func Max(inReal []float64, inTimePeriod int) []float64 {
 	return outReal
 }
 
+// Maximum - Highest value from two vectors
+func Maximum(inReal []float64, inReal1 []float64) []float64 {
+	outReal := make([]float64, len(inReal))
+	for i := 0; i < len(inReal); i++ {
+		if inReal[i] > inReal1[i] {
+			outReal[i] = inReal[i]
+		} else {
+			outReal[i] = inReal1[i]
+		}
+	}
+	return outReal
+}
+
+// Minimum - Lowest value from two vectors
+func Minimum(inReal []float64, inReal1 []float64) []float64 {
+	outReal := make([]float64, len(inReal))
+	for i := 0; i < len(inReal); i++ {
+		if inReal[i] < inReal1[i] {
+			outReal[i] = inReal[i]
+		} else {
+			outReal[i] = inReal1[i]
+		}
+	}
+	return outReal
+}
+
 // MaxIndex - Index of highest value over a specified period
 func MaxIndex(inReal []float64, inTimePeriod int) []float64 {
 
