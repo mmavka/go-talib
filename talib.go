@@ -6132,3 +6132,20 @@ func GroupCandles(highs []float64, opens []float64, closes []float64, lows []flo
 	}
 	return groupedHighs, groupedOpens, groupedCloses, groupedLows, nil
 }
+
+// Clip limits the values in a float64 slice between the min and max values.
+func Clip(inReal, min, max []float64) []float64 {
+	outReal := make([]float64, len(inReal))
+
+	for i := range inReal {
+		if inReal[i] < min[i] {
+			outReal[i] = min[i]
+		} else if inReal[i] > max[i] {
+			outReal[i] = max[i]
+		} else {
+			outReal[i] = inReal[i]
+		}
+	}
+
+	return outReal
+}
