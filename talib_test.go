@@ -782,3 +782,66 @@ func TestGroupCandles(t *testing.T) {
 	assert.EqualValues(t, expGroupedCloses, testGroupedCloses, "Closes not expected")
 	assert.EqualValues(t, expGroupedLows, testGroupedLows, "Lows not expected")
 }
+
+func TestVWAP(t *testing.T) {
+	// Test case 1: Using existing test data with period 5
+	period := 5
+	result := VWAP(testHigh, testLow, testClose, testVolume, period)
+
+	// Calculate expected values manually
+	// VWAP = Σ(Price * Volume) / Σ(Volume)
+	// Price = (High + Low + Close) / 3
+	expected := make([]float64, len(result))
+
+	// First period-1 values should be 0
+	for i := 0; i < period-1; i++ {
+		expected[i] = 0
+	}
+
+	// Calculate VWAP for period 5
+	// Using first 5 candles from test data
+	// Candle 1: High=202.7, Low=200.05, Close=201.28, Volume=121465900
+	// Candle 2: High=200.24, Low=197.28, Close=197.64, Volume=169632600
+	// Candle 3: High=198.62, Low=194.84, Close=195.78, Volume=209151400
+	// Candle 4: High=198.62, Low=196.82, Close=198.22, Volume=125346700
+	// Candle 5: High=201.99, Low=199.87, Close=201.74, Volume=147217800
+
+	// Calculate typical price and weighted price for each candle
+	typicalPrices := []float64{
+		(202.7 + 200.05 + 201.28) / 3,  // 201.343
+		(200.24 + 197.28 + 197.64) / 3, // 198.387
+		(198.62 + 194.84 + 195.78) / 3, // 196.413
+		(198.62 + 196.82 + 198.22) / 3, // 197.887
+		(201.99 + 199.87 + 201.74) / 3, // 201.200
+	}
+
+	volumes := []float64{121465900, 169632600, 209151400, 125346700, 147217800}
+
+	// Calculate weighted sum
+	var weightedSum float64
+	var volumeSum float64
+	for i := 0; i < period; i++ {
+		weightedSum += typicalPrices[i] * volumes[i]
+		volumeSum += volumes[i]
+	}
+
+	// First VWAP value
+	expected[period-1] = weightedSum / volumeSum
+
+	// Verify the result
+	if math.Abs(result[period-1]-expected[period-1]) > 0.001 {
+		t.Errorf("VWAP[%d] = %f; want %f", period-1, result[period-1], expected[period-1])
+	}
+
+	// Test case 2: Empty arrays
+	emptyResult := VWAP([]float64{}, []float64{}, []float64{}, []float64{}, 3)
+	if len(emptyResult) != 0 {
+		t.Errorf("VWAP with empty arrays returned non-empty result")
+	}
+
+	// Test case 3: Different length arrays
+	differentLengthResult := VWAP([]float64{1}, []float64{1}, []float64{1}, []float64{1, 2}, 1)
+	if len(differentLengthResult) != 1 || differentLengthResult[0] != 0 {
+		t.Errorf("VWAP with different length arrays did not return expected result")
+	}
+}

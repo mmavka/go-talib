@@ -6149,3 +6149,39 @@ func Clip(inReal, min, max []float64) []float64 {
 
 	return outReal
 }
+
+// VWAP - Volume Weighted Average Price
+// vwap = VWAP(high, low, close, volume, timeperiod)
+//
+// inTimePeriod: Number of periods
+func VWAP(inHigh []float64, inLow []float64, inClose []float64, inVolume []float64, inTimePeriod int) []float64 {
+	outReal := make([]float64, len(inClose))
+
+	if len(inHigh) != len(inLow) || len(inHigh) != len(inClose) || len(inHigh) != len(inVolume) {
+		return outReal
+	}
+
+	// Calculate typical price
+	typicalPrice := make([]float64, len(inClose))
+	for i := 0; i < len(inClose); i++ {
+		typicalPrice[i] = (inHigh[i] + inLow[i] + inClose[i]) / 3.0
+	}
+
+	// Calculate VWAP
+	for i := inTimePeriod - 1; i < len(inClose); i++ {
+		var sumPV float64
+		var sumV float64
+
+		for j := 0; j < inTimePeriod; j++ {
+			idx := i - j
+			sumPV += typicalPrice[idx] * inVolume[idx]
+			sumV += inVolume[idx]
+		}
+
+		if sumV != 0 {
+			outReal[i] = sumPV / sumV
+		}
+	}
+
+	return outReal
+}
