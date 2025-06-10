@@ -6185,3 +6185,33 @@ func VWAP(inHigh []float64, inLow []float64, inClose []float64, inVolume []float
 
 	return outReal
 }
+
+// VWMA - Volume Weighted Moving Average
+// vwma = VWMA(close, volume, timeperiod)
+//
+// inTimePeriod: Number of periods
+func VWMA(inReal []float64, inVolume []float64, inTimePeriod int) []float64 {
+	outReal := make([]float64, len(inReal))
+
+	if len(inReal) != len(inVolume) {
+		return outReal
+	}
+
+	// Calculate VWMA
+	for i := inTimePeriod - 1; i < len(inReal); i++ {
+		var sumPV float64
+		var sumV float64
+
+		for j := 0; j < inTimePeriod; j++ {
+			idx := i - j
+			sumPV += inReal[idx] * inVolume[idx]
+			sumV += inVolume[idx]
+		}
+
+		if sumV != 0 {
+			outReal[i] = sumPV / sumV
+		}
+	}
+
+	return outReal
+}

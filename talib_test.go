@@ -845,3 +845,54 @@ func TestVWAP(t *testing.T) {
 		t.Errorf("VWAP with different length arrays did not return expected result")
 	}
 }
+
+func TestVWMA(t *testing.T) {
+	// Test case 1: Using existing test data with period 5
+	period := 5
+	result := VWMA(testClose, testVolume, period)
+
+	// Calculate expected values manually
+	// VWMA = Σ(Price * Volume) / Σ(Volume)
+	expected := make([]float64, len(result))
+
+	// First period-1 values should be 0
+	for i := 0; i < period-1; i++ {
+		expected[i] = 0
+	}
+
+	// Calculate VWMA for period 5
+	// Using first 5 close prices and volumes from test data
+	// Close prices: 201.28, 197.64, 195.78, 198.22, 201.74
+	// Volumes: 121465900, 169632600, 209151400, 125346700, 147217800
+
+	closePrices := []float64{201.28, 197.64, 195.78, 198.22, 201.74}
+	volumes := []float64{121465900, 169632600, 209151400, 125346700, 147217800}
+
+	// Calculate weighted sum
+	var weightedSum float64
+	var volumeSum float64
+	for i := 0; i < period; i++ {
+		weightedSum += closePrices[i] * volumes[i]
+		volumeSum += volumes[i]
+	}
+
+	// First VWMA value
+	expected[period-1] = weightedSum / volumeSum
+
+	// Verify the result
+	if math.Abs(result[period-1]-expected[period-1]) > 0.001 {
+		t.Errorf("VWMA[%d] = %f; want %f", period-1, result[period-1], expected[period-1])
+	}
+
+	// Test case 2: Empty arrays
+	emptyResult := VWMA([]float64{}, []float64{}, 3)
+	if len(emptyResult) != 0 {
+		t.Errorf("VWMA with empty arrays returned non-empty result")
+	}
+
+	// Test case 3: Different length arrays
+	differentLengthResult := VWMA([]float64{1}, []float64{1, 2}, 1)
+	if len(differentLengthResult) != 1 || differentLengthResult[0] != 0 {
+		t.Errorf("VWMA with different length arrays did not return expected result")
+	}
+}
